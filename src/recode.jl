@@ -12,7 +12,9 @@ This function accepts path to a folder containing images (.png & .jpg) and
 """
 function recodeimage(pathtoimage, n_singularvlas)
     imagelist = glob("*.jpg", pathtoimage) # reading all files with .jpg extension 
+    append!(imagelist,  glob("*.JPG", pathtoimage))
     append!(imagelist,  glob("*.png", pathtoimage)) # reading files with .png extension
+    append!(imagelist,  glob("*.PNG", pathtoimage))
     recodedArray = Array{Float64}(undef, 0, n_singularvlas) # empty array for storing the final matrix 
     @showprogress for images in imagelist
         X = load(images)
