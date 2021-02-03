@@ -36,6 +36,7 @@ function recodeaudio(filepath,ncep)
 end
 
 function recodetext(pathtotxt, n_singularvals)
+    Taro.init()
     files = glob("*.pdf", pathtotxt)
     docs = Array{StringDocument{String},1}[]
     getTitle(t) = TextAnalysis.sentence_tokenize(Languages.English(), t)[1]

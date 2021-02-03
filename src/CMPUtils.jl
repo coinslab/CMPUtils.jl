@@ -15,9 +15,6 @@ module CMPUtils
     using TextAnalysis
     using Taro
     using Languages 
-    function __init__()
-        Taro.init()
-    end
     include("recode.jl")
 
     export recodeimage, recodeaudio, recodetext
