@@ -1,4 +1,3 @@
-__precompile__()
 module CMPUtils
     using Images
     using ImageIO
