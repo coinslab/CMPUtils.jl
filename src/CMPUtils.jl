@@ -9,7 +9,7 @@ module CMPUtils
     using DataFrames: DataFrame
     using StatsBase
     using WAV
-    using MFCC
+    using MFCC: mfcc 
     using Glob
     using TextAnalysis
     using Taro
