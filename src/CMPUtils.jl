@@ -6,7 +6,7 @@ module CMPUtils
     using Pipe: @pipe
     using ProgressMeter: @showprogress
     using CSV
-    using DataFrames
+    using DataFrames: DataFrame
     using StatsBase
     using WAV
     using MFCC
