@@ -17,4 +17,7 @@ module CMPUtils
     include("recode.jl")
 
     export recodeimage, recodeaudio, recodetext
+    precompile(recodeimage, (String,Int),)
+    precompile(recodeaudio, (String,Int),)
+    precompile(recodetext, (String,Int),)
 end
