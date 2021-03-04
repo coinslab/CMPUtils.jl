@@ -1,7 +1,8 @@
 module CMPUtils
+    
     using Images
     using ImageIO
-    using ImageMagick
+    using ImageMagick 
     using LinearAlgebra
     using Pipe: @pipe
     using ProgressMeter: @showprogress
@@ -14,9 +15,10 @@ module CMPUtils
     using TextAnalysis
     using Taro
     using Languages 
+    using StatsBase
     include("recode.jl")
 
-    export recodeimage, recodeaudio, recodetext
+    export recodeimage, recodeaudio, recodetext, unit_standardize
     precompile(recodeimage, (String,Int),)
     precompile(recodeaudio, (String,Int),)
     precompile(recodetext, (String,Int),)
