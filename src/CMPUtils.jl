@@ -18,7 +18,7 @@ module CMPUtils
     using StatsBase
     include("recode.jl")
 
-    export recodeimage, recodeaudio, recodetext, unit_standardize
+    export recodeimage, recodeaudio, recodetext
     precompile(recodeimage, (String,Int),)
     precompile(recodeaudio, (String,Int),)
     precompile(recodetext, (String,Int),)
