@@ -23,20 +23,35 @@ function recodeimage(pathtoimage, n_singularvlas)
     # Initializing an empty array to store the n_singular values of the images 
     recodedArray = Array{Float64}(undef, 0, n_singularvlas) 
 
+    temp = Array{Array{Float64,2},1}(undef,length(imagelist))
     # @showprogress is a macro to print the progress of this loop when this function is run 
-    @showprogress for images in imagelist
-        X = load(images)
+    @showprogress "Loading Images " for i in 1:length(imagelist)
+        temp[i] = Float64.(Gray.(load(imagelist[i])))
 
         # @pipe is a macro for chaining multiple tasks
         # the next two blocks of code takes the image, converts it into grayscale and compute 
         # the singular values, then only the first n_singular values are stored in the recodedArray    
-        img_singluar = @pipe X |> Float64.(Gray.(_)) |> svdvals(_)[1:n_singularvlas]' 
-        recodedArray = vcat(recodedArray, img_singluar) 
+        #img_singluar = @pipe X |> Float64.(Gray.(_)) |> svdvals(_)[1:n_singularvlas]' 
+        #recodedArray = vcat(recodedArray, img_singluar) 
     end
-    recodedArray =  standardize(UnitRangeTransform, recodedArray, dims=1)
+    stackedX = vcat(temp...)
+    U,S,V = svd(stackedX)
+    scree = Float64[]
+    for i in 1:length(S)
+        approx =U[:,1:i]*diagm(S[1:i])*V[:,1:i]'
+        temp = sum(stackedX) - sum(approx)
+        append!(scree,temp)
+    end
+    p1 = plot(1:length(S), scree, xlabel ="Singular Value ID",
+                                ylabel = "sum(S) - sum(S[1:SingularValueID])",
+                                legend=false,
+                                grid=:none, color=:grey)
+    p1 = scatter!(scree, color=:grey)
+    display(p1)
+    #recodedArray =  eachcol(recodedArray) ./ norm.(eachcol(recodedArray))
     # writing the array as a .csv file 
-    filename = joinpath(pathtoimage, "image_recoded.csv")
-    CSV.write(filename,  DataFrame(recodedArray), writeheader=true)
+    #filename = joinpath(pathtoimage, "image_recoded.csv")
+   # CSV.write(filename,  DataFrame(recodedArray), writeheader=true)
 end
 
 
@@ -119,7 +134,7 @@ function recodetext(pathtotxt, n_singularvals)
 
     # The corpus is used to generates a document term matrix, 
     # and we perform singluar value decomposition on this matrix. 
-    U,S,Vt = @pipe crps |> DocumentTermMatrix(_) |> dtm(_, :dense) |> svd(_)
+    U,S,V,Vt = @pipe crps |> DocumentTermMatrix(_) |> dtm(_, :dense) |> svd(_)
     if n_singularvals > length(S)
         println("You have set more number of singluar values than present \n so seting number of singluar values = length(singular values)")
         n_singularvals = length(S)

@@ -16,6 +16,7 @@ module CMPUtils
     using Taro
     using Languages 
     using StatsBase
+    using Plots 
     include("recode.jl")
 
     export recodeimage, recodeaudio, recodetext
