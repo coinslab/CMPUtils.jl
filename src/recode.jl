@@ -26,7 +26,7 @@ function recodeimage(pathtoimage, n_singularvlas)
     temp = Array{Array{Float64,2},1}(undef,length(imagelist))
     # @showprogress is a macro to print the progress of this loop when this function is run 
     @showprogress "Loading Images " for i in 1:length(imagelist)
-        temp[i] = Float64.(Gray.(load(imagelist[i])))
+        temp[i] = Float64.(Gray.(imresize(load(imagelist[i]),128,128)))
 
         # @pipe is a macro for chaining multiple tasks
         # the next two blocks of code takes the image, converts it into grayscale and compute 
