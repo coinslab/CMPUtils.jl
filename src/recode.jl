@@ -33,7 +33,7 @@ function recodeimage(pathtoimage, n_singularvlas)
         img_singluar = @pipe X |> Float64.(Gray.(_)) |> svdvals(_)[1:n_singularvlas]' 
         recodedArray = vcat(recodedArray, img_singluar) 
     end
-    recodedArray =  eachcol(recodedArray) ./ norm.(eachcol(recodedArray))
+    recodedArray =  standardize(UnitRangeTransform, recodedArray, dims=1)
     # writing the array as a .csv file 
     filename = joinpath(pathtoimage, "image_recoded.csv")
     CSV.write(filename,  DataFrame(recodedArray), writeheader=true)
