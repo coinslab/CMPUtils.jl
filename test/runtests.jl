@@ -1,8 +1,9 @@
 using CMPUtils
 using Test
+recodeaudio(".",10)
 @testset "CMPUtils.jl" begin
-    #recodeimage("tmp",20) == true
+    #recodeimage(".",20)
     #recodeaudio("tmp",10)
-    #recodetext("tmp",2)
-    unit_standardize(rand(10) .*10) 
+    #recodetext(".",20)
+    #unit_standardize(rand(10) .*10) 
 end

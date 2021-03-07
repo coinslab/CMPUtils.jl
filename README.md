@@ -11,7 +11,7 @@ add https://github.com/coinslab/CMPUtils.jl
 
 ```julia
 using CMPUtils
-recodeimage(path_to_folder,num_singular_vals)
+recodeimage(path_to_folder)
 recodeaudio(path_to_folder,num_cep_coeffs)
-recodetext(path_to_folder,num_singular_vals)
+recodetext(path_to_folder)
 ```

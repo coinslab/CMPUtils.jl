@@ -1,5 +1,6 @@
 module CMPUtils
     
+    using Plots 
     using Images
     using ImageIO
     using ImageMagick 
@@ -14,9 +15,9 @@ module CMPUtils
     using Glob
     using TextAnalysis
     using Taro
+    Taro.init()
     using Languages 
     using StatsBase
-    using Plots 
     include("recode.jl")
 
     export recodeimage, recodeaudio, recodetext

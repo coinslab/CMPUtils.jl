@@ -1,3 +1,12 @@
+# A simple function to read user inputs 
+function input(prompt)
+    println(prompt)
+    uinput = readline();
+    chomp(uinput)
+    uinput = parse(Int,uinput)
+end
+
+
 """
 recodeimage(pathtoimage, n_singularvlas) 
 
@@ -13,45 +22,60 @@ This function accepts path to a folder containing images (.png & .jpg) and
     In the above example, we are asking to return a CSV File that has the first 3 singular  
     values of the images in the folder. 
 """
-function recodeimage(pathtoimage, n_singularvlas)
+function recodeimage(pathtoimage)
     # The following code block looks for .jpg/.JPG/.png/.PNG files and create a list of them 
     imagelist = glob("*.jpg", pathtoimage)  
     append!(imagelist,  glob("*.JPG", pathtoimage))
     append!(imagelist,  glob("*.png", pathtoimage)) 
     append!(imagelist,  glob("*.PNG", pathtoimage))
 
-    # Initializing an empty array to store the n_singular values of the images 
-    recodedArray = Array{Float64}(undef, 0, n_singularvlas) 
 
+    # Algorithm for scree plot ===================================================================================
+    # creating a temporary array of arrays to hold the numerical values of the grayscaled images 
+    # temp[1] will have the grayscaled information of image 1, and so on...
     temp = Array{Array{Float64,2},1}(undef,length(imagelist))
+    
     # @showprogress is a macro to print the progress of this loop when this function is run 
-    @showprogress "Loading Images " for i in 1:length(imagelist)
+        @showprogress "Loading Images " for i in 1:length(imagelist)
         temp[i] = Float64.(Gray.(imresize(load(imagelist[i]),128,128)))
-
+        # TODO: delete the remaining commented code in this loop. 
         # @pipe is a macro for chaining multiple tasks
         # the next two blocks of code takes the image, converts it into grayscale and compute 
         # the singular values, then only the first n_singular values are stored in the recodedArray    
         #img_singluar = @pipe X |> Float64.(Gray.(_)) |> svdvals(_)[1:n_singularvlas]' 
         #recodedArray = vcat(recodedArray, img_singluar) 
     end
+    
+    # stacking individual images to create a giant image matrix 
     stackedX = vcat(temp...)
-    U,S,V = svd(stackedX)
-    scree = Float64[]
-    for i in 1:length(S)
-        approx =U[:,1:i]*diagm(S[1:i])*V[:,1:i]'
-        temp = sum(stackedX) - sum(approx)
-        append!(scree,temp)
-    end
-    p1 = plot(1:length(S), scree, xlabel ="Singular Value ID",
-                                ylabel = "sum(S) - sum(S[1:SingularValueID])",
+    println("Running Singular Value Decomposition...")
+    S= svdvals(stackedX)
+    S = S ./norm(S)
+    p1 = plot(1:length(S), S, xlabel ="Singular Value ID",
+                                ylabel = "Singular Values",
+                                title = "Scree Plot",
                                 legend=false,
                                 grid=:none, color=:grey)
-    p1 = scatter!(scree, color=:grey)
+    p1 = scatter!(S, color=:grey)
     display(p1)
-    #recodedArray =  eachcol(recodedArray) ./ norm.(eachcol(recodedArray))
+    # ============================================================================================================
+    
+    # After examining the scree plot, the user decides the no. of singular values 
+    n_singularvlas = input("No. of Features (due to bug in the code that reads user inputs, you might have to enter the no twice, if the program didn't run first time)")
+    
+    # Initializing an empty array to store the n_singular values of the images 
+    recodedArray = Array{Float64}(undef, 0, n_singularvlas) 
+    # computing singular values using only the first n_singulars 
+    for imagearrays in temp
+        img_singular = @pipe imagearrays |> svdvals(_)[1:n_singularvlas]'
+        recodedArray = vcat(recodedArray, img_singular)
+    end
+
+    # Normalizing the singular values 
+    recodedArray =  eachcol(recodedArray) ./ norm.(eachcol(recodedArray))
     # writing the array as a .csv file 
-    #filename = joinpath(pathtoimage, "image_recoded.csv")
-   # CSV.write(filename,  DataFrame(recodedArray), writeheader=true)
+    filename = joinpath(pathtoimage, "image_recoded.csv")
+    CSV.write(filename,  DataFrame(recodedArray), writeheader=true)
 end
 
 
@@ -67,12 +91,12 @@ This function reads audio files (.wav files) in the file path and generates an e
     recodeaudio(path,3)
     ```
 """
-function recodeaudio(filepath,ncep)
+function recodeaudio(filepath, ncep)
 
     # creating a list of .wav files in the folder and an empty array to store the mean cepstral coefficients
     audiolist = glob("*.wav",filepath)
     recodedArray = Array{Float64}(undef, 0, ncep)
-
+    
     @showprogress for files in audiolist
         x,fs = wavread(files)
 
@@ -87,6 +111,9 @@ function recodeaudio(filepath,ncep)
 
     # Saving the recodedArray as a .csv file 
     filename = joinpath(filepath, "audio_recoded.csv")
+    
+    # Normalizing values before writing onto excel sheet. 
+    recodedArray = eachcol(recodedArray) ./ norm(eachcol(recodedArray))
     CSV.write(filename,  DataFrame(recodedArray), writeheader=true)
 end
 
@@ -102,11 +129,10 @@ This function reads PDF files in the pathtotxt and generates an excel file (.CSV
     recodetext(pathtotxt,3)
     ```
 """
-function recodetext(pathtotxt, n_singularvals)
+function recodetext(pathtotxt)
 
     # PDF parsing utilities for this function are provided by the Taro julia package 
     # and Taro requires to initialize a java virtual machine. Taro.init() achieves that
-    Taro.init()
 
     # Creating a list of PDF files in the path. 
     files = glob("*.pdf", pathtotxt)
@@ -134,16 +160,20 @@ function recodetext(pathtotxt, n_singularvals)
 
     # The corpus is used to generates a document term matrix, 
     # and we perform singluar value decomposition on this matrix. 
-    U,S,V,Vt = @pipe crps |> DocumentTermMatrix(_) |> dtm(_, :dense) |> svd(_)
-    if n_singularvals > length(S)
-        println("You have set more number of singluar values than present \n so seting number of singluar values = length(singular values)")
-        n_singularvals = length(S)
-    end
+    U,S,V = @pipe crps |> DocumentTermMatrix(_) |> dtm(_, :dense) |> svd(_)
     
+    S = S ./norm(S)
+    p1 = plot(1:length(S), S, xlabel ="Singular Value ID",
+                                ylabel = "Singular Values",
+                                title = "Scree Plot",
+                                legend=false,
+                                grid=:none, color=:grey)
+    p1 = scatter!(S, color=:grey)
+    display(p1)
+    n_singularvlas = input("No. of Features (due to bug in the code that reads user inputs, you might have to enter the no twice, if the program didn't run first time)")
     # Reconstructing the document term matrix with just the first n_singularvals. 
-    DTM = U[:,1:n_singularvals]*diagm(S[1:n_singularvals])*Vt[:,1:n_singularvals]'
-
+   # DTM = U[:,1:n_singularvals]*diagm(S[1:n_singularvals])*Vt[:,1:n_singularvals]'
     # saving the reconstructed document term matrix as a .csv file 
     filename = joinpath(pathtotxt, "reconstructed_document_term_matrix.csv")
-    CSV.write(filename,  DataFrame(DTM), writeheader=true)
+    CSV.write(filename,  DataFrame(U[:,1:n_singularvlas]), writeheader=true)
 end
