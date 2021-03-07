@@ -56,7 +56,7 @@ function recodeimage(pathtoimage)
                                 title = "Scree Plot",
                                 legend=false,
                                 grid=:none, color=:grey)
-    p1 = scatter!(S, color=:grey)
+   p1 = scatter!(S, color=:grey)
     display(p1)
     # ============================================================================================================
     
