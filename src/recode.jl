@@ -85,11 +85,11 @@ This function reads audio files (.wav files) in the file path and generates an e
     recodeaudio(path,3)
     ```
 """
-function recodeaudio(filepath, ncep)
+function recodeaudio(filepath)
 
     # creating a list of .wav files in the folder and an empty array to store the mean cepstral coefficients
     audiolist = glob("*.wav",filepath)
-    recodedArray = Array{Float64}(undef, 0, ncep)
+    recodedArray = Array{Float64}(undef, 0, 26)
     
     @showprogress for files in audiolist
         x,fs = wavread(files)
@@ -98,17 +98,28 @@ function recodeaudio(filepath, ncep)
         # mfcc returns 3 values: [1] a matrix of numcep columns with for each speech frame a row of MFCC coefficient,
         # [2] the power spectrum, and [3] a dictionary containing the information about the parameters 
         # mfcc(x,fs, numcep = ncep)[1]...here the [1] specifies that we accesing only the cep coefficients matrix. 
-        # From the above step, the mean cep is calculated and stored to the recodedArray 
-        cep = collect(mfcc(x,fs, numcep = ncep)[1])
-        recodedArray = vcat(recodedArray, mean(cep,dims=1))
+        # From the above step, the mean cep is calculated, then the first 13 deltas are extracted 
+        # from the signal and mean_cep and deltas are horizontally concatinated to form the feature vector
+        deltavals = deltas(x)[1:13]'
+        cep = collect(mfcc(x,fs)[1])
+        features = [mean(cep,dims=1) deltavals]
+        recodedArray = vcat(recodedArray, features)
     end
-
+     
+    U,S,V = svd(recodedArray)
+    S = S ./norm(S)
+    screeplot(S)
+    # ============================================================================================================
+    
+    # After examining the scree plot, the user decides the no. of singular values 
+    n_singularvlas = input("No. of Features (due to bug in the code that reads user inputs, you might have to enter the no twice, if the program didn't run first time)")
     # Saving the recodedArray as a .csv file 
+    featurematrix = U[:,1:n_singularvlas]
     filename = joinpath(filepath, "audio_recoded.csv")
     
     # Normalizing values before writing onto excel sheet. 
-    recodedArray = eachcol(recodedArray) ./ norm(eachcol(recodedArray))
-    CSV.write(filename,  DataFrame(recodedArray), writeheader=true)
+    #recodedArray = eachcol(recodedArray) ./ norm(eachcol(recodedArray))
+    CSV.write(filename,  DataFrame(featurematrix), writeheader=true)
 end
 
 """

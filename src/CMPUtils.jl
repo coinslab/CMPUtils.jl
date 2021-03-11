@@ -14,7 +14,7 @@ module CMPUtils
     using StatsBase
     println("Did you hear something? Tuning up my audio powers!!!!")
     using WAV
-    using MFCC: mfcc 
+    using MFCC: mfcc, deltas 
     using Glob
     println("Oh, I almost forgot about the PDFs!")
     using TextAnalysis
