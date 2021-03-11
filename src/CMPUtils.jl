@@ -1,8 +1,7 @@
 module CMPUtils
     println("Howdy!!!, Sit back and relax! This might take some time...")
     println("Loading the mighty plotting functions")
-    using Plots 
-
+    using GRUtils 
     println("Let me get some tools to handle images. ")
     using Images
     using ImageIO
@@ -23,6 +22,7 @@ module CMPUtils
     Taro.init()
     using Languages 
     using StatsBase
+    include("plotting.jl")
     include("recode.jl")
 
     export recodeimage, recodeaudio, recodetext

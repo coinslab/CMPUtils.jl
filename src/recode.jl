@@ -51,13 +51,7 @@ function recodeimage(pathtoimage)
     println("Running Singular Value Decomposition...")
     S= svdvals(stackedX)
     S = S ./norm(S)
-    p1 = plot(1:length(S), S, xlabel ="Singular Value ID",
-                                ylabel = "Singular Values",
-                                title = "Scree Plot",
-                                legend=false,
-                                grid=:none, color=:grey)
-   p1 = scatter!(S, color=:grey)
-    display(p1)
+    screeplot(S)
     # ============================================================================================================
     
     # After examining the scree plot, the user decides the no. of singular values 
@@ -163,12 +157,7 @@ function recodetext(pathtotxt)
     U,S,V = @pipe crps |> DocumentTermMatrix(_) |> dtm(_, :dense) |> svd(_)
     
     S = S ./norm(S)
-    p1 = plot(1:length(S), S, xlabel ="Singular Value ID",
-                                ylabel = "Singular Values",
-                                title = "Scree Plot",
-                                legend=false,
-                                grid=:none, color=:grey)
-    p1 = scatter!(S, color=:grey)
+    screeplot(S)
     display(p1)
     n_singularvlas = input("No. of Features (due to bug in the code that reads user inputs, you might have to enter the no twice, if the program didn't run first time)")
     # Reconstructing the document term matrix with just the first n_singularvals. 
