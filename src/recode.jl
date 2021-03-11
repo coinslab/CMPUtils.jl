@@ -102,7 +102,7 @@ function recodeaudio(filepath)
         # from the signal and mean_cep and deltas are horizontally concatinated to form the feature vector
         deltavals = deltas(x)[1:13]'
         cep = collect(mfcc(x,fs)[1])
-        features = [mean(cep,dims=1) deltavals]
+        features = [mean(cep,dims=1) deltavals] # mean(_,dims=1) returns the column means 
         recodedArray = vcat(recodedArray, features)
     end
      
