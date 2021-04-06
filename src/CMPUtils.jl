@@ -15,7 +15,7 @@ module CMPUtils
     println("Did you hear something? Tuning up my audio powers!!!!")
     using WAV
     using MFCC: mfcc, deltas 
-    using Glob
+    using Glob: glob 
     println("Oh, I almost forgot about the PDFs!")
     using TextAnalysis
     using Taro
@@ -24,8 +24,8 @@ module CMPUtils
     using StatsBase
     include("plotting.jl")
     include("recode.jl")
-
-    export recodeimage, recodeaudio, recodetext
+    include("classdemos.jl")
+    export recodeimage, recodeaudio, recodetext, img_similarity
     precompile(recodeimage, (String,Int),)
     precompile(recodeaudio, (String,Int),)
     precompile(recodetext, (String,Int),)
