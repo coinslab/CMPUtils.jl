@@ -6,5 +6,5 @@ function screeplot(S)
         ylabel = "Singular Values", grid=false)
     hold(true)
     aspectratio(24/16)
-    display(GRUtils.scatter(1:length(S),S,grid=false))
+    display(scatter(1:length(S),S,grid=false))
 end
