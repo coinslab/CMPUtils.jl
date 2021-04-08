@@ -17,25 +17,3 @@ function img_similarity(pathtoimage)
     end
     return similarity_matrix
 end
-
-# Demo for Perceptron =====================================================
-function Perceptron(units)
-    ϕ(x) = x >= 0 ? 1 : -1       # Stimulus  
-    Chain(
-    Dense(3,units, ϕ),           # Hidden Layer 
-    Dense(units,1, x-> ϕ.(x)))   # Output Layer 
-end
-
-function demoperceptron(lr,epochs, units, X,y)
-   #data = Flux.Data.DataLoader(X', y)
-    opt = Descent(lr)
-    model = Perceptron(units)
-    loss(x, y) = sum(Flux.Losses.logitbinarycrossentropy(model(X'), y))
-    # Training Method 1
-    ps = Flux.params(model)
-    for i in 1:epochs
-        Flux.train!(loss, ps,zip(X',y), opt)
-    end
-    return model 
-end
-#  ========================================================================

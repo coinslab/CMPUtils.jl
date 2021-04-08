@@ -21,12 +21,11 @@ module CMPUtils
     using Taro
     Taro.init()
     using Languages 
-    using StatsBase:mean 
-    using Flux 
+    using StatsBase
     include("plotting.jl")
     include("recode.jl")
     include("classdemos.jl")
-    export recodeimage, recodeaudio, recodetext, img_similarity, demoperceptron, params
+    export recodeimage, recodeaudio, recodetext, img_similarity
     precompile(recodeimage, (String,Int),)
     precompile(recodeaudio, (String,Int),)
     precompile(recodetext, (String,Int),)
