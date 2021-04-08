@@ -6,6 +6,7 @@ version = "0.1.0"
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
 GRUtils = "0337cf30-a0fd-11e9-31db-a79914c9d7ac"
 Glob = "c27321d9-0574-5035-807b-f59d2c89b15c"
 ImageIO = "82e4d734-157c-48bb-816b-45c225c6df19"
