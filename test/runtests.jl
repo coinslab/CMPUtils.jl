@@ -1,6 +1,6 @@
 using CMPUtils
 using Test
-@show img_similarity("im")
+recodeimage(".")
 @testset "CMPUtils.jl" begin
     #recodeimage(".",20)
     #recodeaudio("tmp",10)
