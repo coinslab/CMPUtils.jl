@@ -1,6 +1,7 @@
+
 using CMPUtils
 using Test
-recodeimage(".")
+recodeaudio("audio")
 @testset "CMPUtils.jl" begin
     #recodeimage(".",20)
     #recodeaudio("tmp",10)

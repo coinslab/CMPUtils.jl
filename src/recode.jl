@@ -49,7 +49,7 @@ function recodeimage(pathtoimage)
     # stacking individual images to create a giant image matrix 
     stackedX = vcat(temp...)
     println("Running Singular Value Decomposition...")
-    S= svdvals(stackedX)
+    U,S,V= svd(stackedX)
     S = S ./norm(S)
     screeplot(S)
     # ============================================================================================================
@@ -105,7 +105,9 @@ function recodeaudio(filepath)
         features = [mean(cep,dims=1) deltavals] # mean(_,dims=1) returns the column means 
         recodedArray = vcat(recodedArray, features)
     end
-     
+    replace!(recodedArray, Inf =>0)
+    replace!(recodedArray, -Inf =>0)
+    replace!(recodedArray, NaN =>0)
     U,S,V = svd(recodedArray)
     S = S ./norm(S)
     screeplot(S)
@@ -138,7 +140,6 @@ function recodetext(pathtotxt)
 
     # PDF parsing utilities for this function are provided by the Taro julia package 
     # and Taro requires to initialize a java virtual machine. Taro.init() achieves that
-
     # Creating a list of PDF files in the path. 
     files = glob("*.pdf", pathtotxt)
 
@@ -159,7 +160,7 @@ function recodetext(pathtotxt)
     
     # cleaning the corpus. getting rid of non-words, punctuations etc...
     prepare!(crps, strip_non_letters | strip_punctuation | strip_case | strip_stopwords)
-    stem!(crps)
+    TextAnalysis.stem!(crps)
     update_lexicon!(crps)
     update_inverse_index!(crps)
 
@@ -168,7 +169,7 @@ function recodetext(pathtotxt)
     U,S,V = @pipe crps |> DocumentTermMatrix(_) |> dtm(_, :dense) |> svd(_)
     
     S = S ./norm(S)
-    screeplot(S)
+    p1 = screeplot(S)
     display(p1)
     n_singularvlas = input("No. of Features (due to bug in the code that reads user inputs, you might have to enter the no twice, if the program didn't run first time)")
     # Reconstructing the document term matrix with just the first n_singularvals. 

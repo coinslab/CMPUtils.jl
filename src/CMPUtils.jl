@@ -1,7 +1,9 @@
 module CMPUtils
-    println("Howdy!!!, Sit back and relax! This might take some time...")
+    using Taro  
+    Taro.init() 
+println("Howdy!!!, Sit back and relax! This might take some time...")
     println("Loading the mighty plotting functions")
-    using GRUtils 
+    using GRUtils
     println("Let me get some tools to handle images. ")
     using Images
     using ImageIO
@@ -18,8 +20,6 @@ module CMPUtils
     using Glob
     println("Oh, I almost forgot about the PDFs!")
     using TextAnalysis
-    using Taro
-    Taro.init()
     using Languages 
     using StatsBase
     include("plotting.jl")
