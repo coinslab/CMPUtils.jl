@@ -24,7 +24,7 @@ println("Howdy!!!, Sit back and relax! This might take some time...")
     using StatsBase
     include("plotting.jl")
     include("recode.jl")
-    iclude("classdemo.jl")
+    include("classdemo.jl")
 
     export recodeimage, recodeaudio, recodetext, img_similarity
     precompile(recodeimage, (String,Int),)
