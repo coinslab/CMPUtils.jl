@@ -26,7 +26,7 @@ println("Howdy!!!, Sit back and relax! This might take some time...")
     include("recode.jl")
     include("classdemo.jl")
 
-    export recodeimage, recodeaudio, recodetext, img_similarity
+    export recodeimage, recodeaudio, recodetext, img_similarity, recodeaudio2
     precompile(recodeimage, (String,Int),)
     precompile(recodeaudio, (String,Int),)
     precompile(recodetext, (String,Int),)
