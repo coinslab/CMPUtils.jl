@@ -1,6 +1,7 @@
 module CMPUtils
-    using JavaCall
-    JavaCall.init()
+ENV["JULIA_COPY_STACKS"] = 1
+    #using JavaCall
+    #JavaCall.init()
     using Taro  
     Taro.init() 
 println("Howdy!!!, Sit back and relax! This might take some time...")
