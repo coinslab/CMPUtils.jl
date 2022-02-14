@@ -1,5 +1,5 @@
 module CMPUtils
-ENV["JULIA_COPY_STACKS"] = 1
+    #run(`$JULIA_COPY_STACKS = yes`)
     #using JavaCall
     #JavaCall.init()
     using Taro  
