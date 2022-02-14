@@ -1,4 +1,6 @@
 module CMPUtils
+    using JavaCall
+    JavaCall.init()
     using Taro  
     Taro.init() 
 println("Howdy!!!, Sit back and relax! This might take some time...")
