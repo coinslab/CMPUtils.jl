@@ -69,7 +69,7 @@ function recodeimage(pathtoimage)
     recodedArray =  eachcol(recodedArray) ./ norm.(eachcol(recodedArray))
     # writing the array as a .csv file 
     filename = joinpath(pathtoimage, "image_recoded.csv")
-    CSV.write(filename,  DataFrame(recodedArray), writeheader=true)
+    CSV.write(filename,  DataFrame(recodedArray, :auto), writeheader=true)
 end
 
 
@@ -121,7 +121,7 @@ function recodeaudio(filepath)
     
     # Normalizing values before writing onto excel sheet. 
     #recodedArray = eachcol(recodedArray) ./ norm(eachcol(recodedArray))
-    CSV.write(filename,  DataFrame(featurematrix), writeheader=true)
+    CSV.write(filename,  DataFrame(featurematrix, :auto), writeheader=true)
 end
 
 """
@@ -176,7 +176,7 @@ function recodetext(pathtotxt)
    # DTM = U[:,1:n_singularvals]*diagm(S[1:n_singularvals])*Vt[:,1:n_singularvals]'
     # saving the reconstructed document term matrix as a .csv file 
     filename = joinpath(pathtotxt, "reconstructed_document_term_matrix.csv")
-    CSV.write(filename,  DataFrame(U[:,1:n_singularvlas]), writeheader=true)
+    CSV.write(filename,  DataFrame(U[:,1:n_singularvlas],:auto), writeheader=true)
 end
 
 
@@ -218,5 +218,5 @@ function recodeaudio2(filepath)
     
     # Normalizing values before writing onto excel sheet. 
     #recodedArray = eachcol(recodedArray) ./ norm(eachcol(recodedArray))
-    CSV.write(filename,  DataFrame(featurematrix), writeheader=true)
+    CSV.write(filename,  DataFrame(featurematrix, :auto), writeheader=true)
 end
