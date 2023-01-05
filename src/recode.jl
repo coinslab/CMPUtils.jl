@@ -124,6 +124,22 @@ function recodeaudio(filepath)
     CSV.write(filename,  DataFrame(featurematrix, :auto), writeheader=true)
 end
 
+
+function getPDFText(src)
+    doc = pdDocOpen(src)
+    docinfo = pdDocGetInfo(doc)
+        io = IOBuffer()
+		npage = pdDocGetPageCount(doc)
+        for i=1:npage
+            page = pdDocGetPage(doc, i)
+            pdPageExtractText(io, page)
+        end
+        Text = String(take!(io))
+    pdDocClose(doc)
+    return (meta = docinfo, text = Text)
+end
+
+
 """
 recodetext(pathtotxt, n_singularvals)
 
@@ -147,13 +163,13 @@ function recodetext(pathtotxt)
     docs = Array{StringDocument{String},1}[]
 
     # This block of code extracts the text from the PDFs and creates a corpus 
-    getTitle(t) = TextAnalysis.sentence_tokenize(Languages.English(), t)[1]
+    #getTitle(t) = TextAnalysis.sentence_tokenize(Languages.English(), t)[1]
    @showprogress for i in 1:length(files)
-        meta,txt = Taro.extract(files[i]);
+        meta,txt = getPDFText(files[i]);
         txt = replace(txt, '\n' => ' ')
-        title = getTitle(txt)
-        dm = TextAnalysis.DocumentMetadata(Languages.English(), title, "", meta["Creation-Date"] )
-        doc = StringDocument(txt, dm)
+        #title = getTitle(txt)
+        #dm = TextAnalysis.DocumentMetadata(Languages.English(), title, "", meta["Creation-Date"] )
+        doc = StringDocument(txt)
         docs = vcat(docs, doc)
     end
     crps = Corpus(docs)
