@@ -1,15 +1,15 @@
 module CMPUtils
     #using JavaCall
     #JavaCall.init()
-    using Taro  
-    Taro.init() 
+    using PDFIO 
+    #Taro.init() 
 println("Howdy!!!, Sit back and relax! This might take some time...")
     println("Loading the mighty plotting functions")
     using GRUtils
     println("Let me get some tools to handle images. ")
     using Images
     using ImageIO
-    using ImageMagick 
+    using ImageMagick_jll
     using LinearAlgebra
     using Pipe: @pipe
     using ProgressMeter: @showprogress
